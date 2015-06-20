@@ -3,9 +3,9 @@ describe("Contacts Test Suite", function(){
 
 	//var request = require('request');
 	var request = require('C:/Program Files/nodejs/node_modules/npm/node_modules/request')
-	var base_url = "http://mycontactsvc.com:3000";
+	var base_url = "http://localhost:3000";
 	var contacts_url = base_url + "/contacts";
-
+  
 	describe("hello world", function(){
 
 		it("hello world",function(done){
@@ -30,6 +30,7 @@ describe("Contacts Test Suite", function(){
 			contact.firstName = "jagan";
 			contact.lastName = "peri";
 			contact.phone = "23002300";
+            contact.message = "hello rnd";
 
 			console.log(JSON.stringify(contact));
 		    
@@ -84,14 +85,48 @@ describe("Contacts Test Suite", function(){
 	// and retrieves it back.
 	describe("post and get message to contact", function(){
 
-		it("should post message to contact", function(done){
-			//TODO: Write your test case here.
+		var idCreated;
+
+		it("should post message for contact", function(done){
+			//TODO: Write your test case here
+
+            var contact = new Object();
+            contact.id=1;
+            contact.message = "hello rnd";
+
+			console.log(JSON.stringify(contact));
+		    
+             request.post({url: contacts_url+ "/messages",
+		    			  body: contact,
+		    			  json: true
+		    			}, 
+		    		    function(error, response, body){
+
+							expect(response.statusCode).toBe(200);
+                            expect(response.message).toBe("hello rnd");
+							console.log(body);
+                            idCreated = body;
+                            console.log(idCreated);
+							
+
+							done();
+					    });
 			done();
 
 		});
-
-		it("should get message for contact", function(done){
+        it("should get message to contact", function(done){
 			//TODO: Write your test case here.
+              request.get({
+							url: contacts_url + "/" + idCreated,
+							json: true
+						},
+		    		    function(error, response, body){
+
+							expect(response.statusCode).toBe(200);
+							console.log(body);
+							expect(body.message).toBe("hello rnd");
+							done();
+					    });
 			done();
 
 		});
